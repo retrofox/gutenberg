@@ -1,3 +1,9 @@
+## Master
+
+### Bug Fixes
+
+- Configure Babel to target your current version of Node as described in [Jest docs](https://jestjs.io/docs/en/getting-started#using-babel).
+
 ## 4.2.0 (2019-05-21)
 
 ### New Features
