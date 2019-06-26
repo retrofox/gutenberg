@@ -209,23 +209,19 @@ class FileEdit extends Component {
 					<div className={ 'wp-block-file__content-wrapper' }>
 						<RichText
 							wrapperClassName={ 'wp-block-file__textlink' }
-							tagName="div" // must be block-level or else cursor disappears
+							tagName="a"
 							value={ fileName }
 							placeholder={ __( 'Write file name…' ) }
-							keepPlaceholderOnFocus
-							formattingControls={ [] } // disable controls
 							onChange={ ( text ) => setAttributes( { fileName: text } ) }
 						/>
 						{ showDownloadButton &&
 							<div className={ 'wp-block-file__button-richtext-wrapper' }>
 								{ /* Using RichText here instead of PlainText so that it can be styled like a button */ }
 								<RichText
-									tagName="div" // must be block-level or else cursor disappears
+									tagName="a"
 									className={ 'wp-block-file__button' }
 									value={ downloadButtonText }
-									formattingControls={ [] } // disable controls
 									placeholder={ __( 'Add text…' ) }
-									keepPlaceholderOnFocus
 									onChange={ ( text ) => setAttributes( { downloadButtonText: text } ) }
 								/>
 							</div>

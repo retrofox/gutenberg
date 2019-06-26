@@ -10,11 +10,11 @@ export default function SearchEdit( { className, attributes, setAttributes } ) {
 	return (
 		<div className={ className }>
 			<RichText
+				tagName="label"
 				wrapperClassName="wp-block-search__label"
 				aria-label={ __( 'Label text' ) }
 				placeholder={ __( 'Add label…' ) }
 				keepPlaceholderOnFocus
-				formattingControls={ [] }
 				value={ label }
 				onChange={ ( html ) => setAttributes( { label: html } ) }
 			/>
@@ -29,12 +29,12 @@ export default function SearchEdit( { className, attributes, setAttributes } ) {
 				onChange={ ( event ) => setAttributes( { placeholder: event.target.value } ) }
 			/>
 			<RichText
+				tagName="button"
 				wrapperClassName="wp-block-search__button"
 				className="wp-block-search__button-rich-text"
 				aria-label={ __( 'Button text' ) }
 				placeholder={ __( 'Add button text…' ) }
 				keepPlaceholderOnFocus
-				formattingControls={ [] }
 				value={ buttonText }
 				onChange={ ( html ) => setAttributes( { buttonText: html } ) }
 			/>

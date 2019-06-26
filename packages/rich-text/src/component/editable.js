@@ -90,6 +90,38 @@ const IS_PLACEHOLDER_VISIBLE_ATTR_NAME = 'data-is-placeholder-visible';
  */
 const IS_IE = userAgent.indexOf( 'Trident' ) >= 0;
 
+const requiredStyles = {
+	cursor: 'text',
+	// Any other display is buggy in most browsers.
+	// * Insertion point disappears.
+	// * Inline dispay may cause the whole wrapping element to be removed by the
+	//   browser.
+	// * Inline-block display stretches the intire with if there is no content.
+	//
+	// To display rich text inline, use inline-block display on a surrounding
+	// element.
+	display: 'block',
+	// In HTML, leading and trailing spaces are not visible, and multiple spaces
+	// elsewhere are visually reduced to one space. This rule prevents spaces
+	// from collapsing so all space is visible in the editor and can be removed.
+	// It also prevents some browsers from inserting non-breaking spaces at the
+	// end of a line to prevent the space from visually disappearing. Sometimes
+	// these non breaking spaces can linger in the editor causing unwanted non
+	// breaking spaces in between words. It also prevents Firefox from inserting
+	// a trailing `br` node to visualise any trailing space, causing the element
+	// to be saved.
+	//
+	// > Authors are encouraged to set the 'white-space' property on editing
+	// > hosts and on markup that was originally created through these editing
+	// > mechanisms to the value 'pre-wrap'. Default HTML whitespace handling
+	// > is not well suited to WYSIWYG editing, and line wrapping will not work
+	// > correctly in some corner cases if 'white-space' is left at its default
+	// > value.
+	// >
+	// > https://html.spec.whatwg.org/multipage/interaction.html#best-practices-for-in-page-editors
+	whiteSpace: 'pre-wrap',
+};
+
 export default class Editable extends Component {
 	constructor() {
 		super();
@@ -112,7 +144,7 @@ export default class Editable extends Component {
 			this.editorNode.setAttribute( 'style', '' );
 			Object.assign( this.editorNode.style, {
 				...( nextProps.style || {} ),
-				whiteSpace: 'pre-wrap',
+				...requiredStyles,
 			} );
 		}
 
@@ -164,27 +196,6 @@ export default class Editable extends Component {
 
 		delete remainingProps.setRef;
 
-		// In HTML, leading and trailing spaces are not visible, and multiple
-		// spaces elsewhere are visually reduced to one space. This rule
-		// prevents spaces from collapsing so all space is visible in the editor
-		// and can be removed.
-		// It also prevents some browsers from inserting non-breaking spaces at
-		// the end of a line to prevent the space from visually disappearing.
-		// Sometimes these non breaking spaces can linger in the editor causing
-		// unwanted non breaking spaces in between words. If also prevent
-		// Firefox from inserting a trailing `br` node to visualise any trailing
-		// space, causing the element to be saved.
-		//
-		// > Authors are encouraged to set the 'white-space' property on editing
-		// > hosts and on markup that was originally created through these
-		// > editing mechanisms to the value 'pre-wrap'. Default HTML whitespace
-		// > handling is not well suited to WYSIWYG editing, and line wrapping
-		// > will not work correctly in some corner cases if 'white-space' is
-		// > left at its default value.
-		// >
-		// > https://html.spec.whatwg.org/multipage/interaction.html#best-practices-for-in-page-editors
-		const whiteSpace = 'pre-wrap';
-
 		return createElement( tagName, {
 			role: 'textbox',
 			'aria-multiline': true,
@@ -194,7 +205,7 @@ export default class Editable extends Component {
 			ref: this.bindEditorNode,
 			style: {
 				...style,
-				whiteSpace,
+				...requiredStyles,
 			},
 			suppressContentEditableWarning: true,
 			dangerouslySetInnerHTML: { __html: valueToEditableHTML( record ) },

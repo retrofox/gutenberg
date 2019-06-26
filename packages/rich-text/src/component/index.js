@@ -146,15 +146,6 @@ class RichText extends Component {
 
 	setRef( node ) {
 		if ( node ) {
-			if ( process.env.NODE_ENV === 'development' ) {
-				const computedStyle = getComputedStyle( node );
-
-				if ( computedStyle.display === 'inline' ) {
-					// eslint-disable-next-line no-console
-					console.warn( 'RichText cannot be used with an inline container. Please use a different tagName.' );
-				}
-			}
-
 			this.editableRef = node;
 		} else {
 			delete this.editableRef;
@@ -1067,7 +1058,7 @@ class RichText extends Component {
 						{ MultilineTag ? <MultilineTag>{ placeholder }</MultilineTag> : placeholder }
 					</Tagname>
 				}
-				{ isSelected && <FormatEdit value={ record } onChange={ this.onChange } /> }
+				{ isSelected && <FormatEdit tagName={ Tagname } value={ record } onChange={ this.onChange } /> }
 			</>
 		);
 

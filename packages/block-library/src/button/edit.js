@@ -75,10 +75,10 @@ class ButtonEdit extends Component {
 			<>
 				<div className={ className } title={ title } ref={ this.bindRef }>
 					<RichText
+						tagName="a"
 						placeholder={ __( 'Add text…' ) }
 						value={ text }
 						onChange={ ( value ) => setAttributes( { text: value } ) }
-						formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
 						className={ classnames(
 							'wp-block-button__link', {
 								'has-background': backgroundColor.color,
