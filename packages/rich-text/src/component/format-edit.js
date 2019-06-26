@@ -28,33 +28,21 @@ const interactiveContentTags = new Set( [
 	'video',
 ] );
 
-/**
- * Formatting restrictions based on the HTML spec.
- */
-const restrictions = {
-	// https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element
-	a: interactiveContentTags,
-	// https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element
-	button: interactiveContentTags,
-	// https://html.spec.whatwg.org/multipage/forms.html#the-label-element
-	label: new Set( [ 'label', 'button', 'input', 'meter', 'output', 'progress', 'select', 'textarea' ] ),
-};
-
-const FormatEdit = ( { formatTypes, onChange, value, tagName } ) => {
+const FormatEdit = ( { formatTypes, onChange, value, withoutInteractiveFormatting } ) => {
 	return (
 		<>
 			{ formatTypes.map( ( {
 				name,
 				edit: Edit,
-				tagName: formatTagName,
+				tagName,
 			} ) => {
 				if ( ! Edit ) {
 					return null;
 				}
 
 				if (
-					restrictions[ tagName ] &&
-					restrictions[ tagName ].has( formatTagName )
+					withoutInteractiveFormatting &&
+					interactiveContentTags.has( tagName )
 				) {
 					return null;
 				}
