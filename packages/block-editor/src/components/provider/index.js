@@ -117,9 +117,9 @@ class BlockEditorProvider extends Component {
 	}
 
 	render() {
-		const { children } = this.props;
+		const { isReady, children } = this.props;
 
-		return children;
+		return isReady && children;
 	}
 }
 
