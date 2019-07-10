@@ -516,7 +516,7 @@ export class TableEdit extends Component {
 						className={ classnames( 'wp-block-table__caption-content', {
 							'is-visible': isSelected || caption,
 						} ) }
-						tagName="p"
+						tagName="div"
 						placeholder={ __( 'Write caption…' ) }
 						value={ caption }
 						onChange={ ( value ) => setAttributes( { caption: value } ) }
