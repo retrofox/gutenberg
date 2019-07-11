@@ -110,7 +110,7 @@ class RichTextWraper extends Component {
 		// an intentional user interaction distinguishing between Backspace and
 		// Delete to remove the empty field, but also to avoid merge & remove
 		// causing destruction of two fields (merge, then removed merged).
-		if ( onRemove && ! isEmpty( value ) && isReverse ) {
+		if ( onRemove && isEmpty( value ) && isReverse ) {
 			onRemove( ! isReverse );
 		}
 	}
