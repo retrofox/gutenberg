@@ -44,7 +44,10 @@ class Editor extends Component {
 	) {
 		settings = {
 			...settings,
-			__experimentalAutoApplyBlockStyles: autoApplyBlockStyles,
+			__experimentalAutoApplyBlockStyles: {
+				...( settings.themeAutoApplyStyles ),
+				...autoApplyBlockStyles,
+			},
 			hasFixedToolbar,
 			focusMode,
 			onUpdateAutoApplyBlockStyles,
