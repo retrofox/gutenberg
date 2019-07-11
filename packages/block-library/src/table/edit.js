@@ -6,6 +6,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
+import { compose, withInstanceId } from '@wordpress/compose';
 import { Component } from '@wordpress/element';
 import {
 	InspectorControls,
@@ -416,6 +417,7 @@ export class TableEdit extends Component {
 			setBackgroundColor,
 			setAttributes,
 			isSelected,
+			instanceId,
 		} = this.props;
 		const { initialRowCount, initialColumnCount } = this.state;
 		const { hasFixedLayout, caption, head, body, foot } = attributes;
@@ -457,6 +459,8 @@ export class TableEdit extends Component {
 			'has-fixed-layout': hasFixedLayout,
 			'has-background': !! backgroundColor.color,
 		} );
+
+		const captionId = `wp-block-table-caption-${ instanceId }`;
 
 		return (
 			<>
@@ -502,16 +506,12 @@ export class TableEdit extends Component {
 					/>
 				</InspectorControls>
 				<figure className={ className }>
-					<table className={ tableClasses }>
-						{ /* Caption is specified as visibly hidden. This allows the caption to be
-						read by a screenreader, but remain editable using a RichText outside the table.
-						Specifying a key forces react to replace the caption element,
-						ensure the up-to-date caption is read by voiceover in chrome */ }
-						<caption className="screen-reader-text" key={ caption }>{ caption }</caption>
+					<table className={ tableClasses } aria-labelledby={ captionId }>
 						<Section type="head" rows={ head } />
 						<Section type="body" rows={ body } />
 						<Section type="foot" rows={ foot } />
 					</table>
+					<figcaption id={ captionId } className="screen-reader-text">{ caption }</figcaption>
 					<RichText
 						className={ classnames( 'wp-block-table__caption-content', {
 							'is-visible': isSelected || caption,
@@ -519,10 +519,9 @@ export class TableEdit extends Component {
 						tagName="div"
 						placeholder={ __( 'Write caption…' ) }
 						value={ caption }
-						onChange={ ( value ) => setAttributes( { caption: value } ) }
+						onChange={ ( value ) => setAttributes( { caption: value, captionId } ) }
 						// Deselect the selected table cell when the caption is focused.
 						unstableOnFocus={ () => this.setState( { selectedCell: null } ) }
-						inlineToolbar
 					/>
 				</figure>
 			</>
@@ -530,4 +529,7 @@ export class TableEdit extends Component {
 	}
 }
 
-export default withCustomBackgroundColors( 'backgroundColor' )( TableEdit );
+export default compose(
+	withInstanceId,
+	withCustomBackgroundColors( 'backgroundColor' )
+)( TableEdit );

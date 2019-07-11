@@ -16,6 +16,7 @@ export default function save( { attributes } ) {
 		foot,
 		backgroundColor,
 		caption,
+		captionId,
 	} = attributes;
 	const isEmpty = ! head.length && ! body.length && ! foot.length;
 
@@ -57,12 +58,18 @@ export default function save( { attributes } ) {
 
 	return (
 		<figure>
-			<table className={ classes }>
-				{ ! RichText.isEmpty( caption ) && <RichText.Content tagName="caption" value={ caption } /> }
+			<table className={ classes } aria-labelledby={ caption ? captionId : undefined }>
 				<Section type="head" rows={ head } />
 				<Section type="body" rows={ body } />
 				<Section type="foot" rows={ foot } />
 			</table>
+			{ ! RichText.isEmpty( caption ) && (
+				<RichText.Content
+					id={ captionId }
+					tagName="figcaption"
+					value={ caption }
+				/>
+			) }
 		</figure>
 	);
 }
