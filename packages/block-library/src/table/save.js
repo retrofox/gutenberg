@@ -31,6 +31,8 @@ export default function save( { attributes } ) {
 		'has-background': !! backgroundClass,
 	} );
 
+	const hasCaption = RichText.isEmpty( caption );
+
 	const Section = ( { type, rows } ) => {
 		if ( ! rows.length ) {
 			return null;
@@ -58,12 +60,12 @@ export default function save( { attributes } ) {
 
 	return (
 		<figure>
-			<table className={ classes } aria-labelledby={ caption ? captionId : undefined }>
+			<table className={ classes } aria-labelledby={ hasCaption ? captionId : undefined }>
 				<Section type="head" rows={ head } />
 				<Section type="body" rows={ body } />
 				<Section type="foot" rows={ foot } />
 			</table>
-			{ ! RichText.isEmpty( caption ) && (
+			{ ! hasCaption && (
 				<RichText.Content
 					id={ captionId }
 					tagName="figcaption"

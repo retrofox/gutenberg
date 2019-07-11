@@ -511,6 +511,11 @@ export class TableEdit extends Component {
 						<Section type="body" rows={ body } />
 						<Section type="foot" rows={ foot } />
 					</table>
+					{ /*
+					   * Use a figcaption, which is visibly hidden and a separate RichText for updating
+					   * the caption. Screenreaders seem to have issues announcing the caption of a
+					   * RichText contenteditable, having two elements is a workaround for the problem.
+					   */ }
 					<figcaption id={ captionId } className="screen-reader-text">{ caption }</figcaption>
 					<RichText
 						className={ classnames( 'wp-block-table__caption-content', {
