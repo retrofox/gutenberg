@@ -99,7 +99,7 @@ class RichTextWraper extends Component {
 		}
 	}
 
-	onDelete( { isEmpty: isValueEmpty, isReverse } ) {
+	onDelete( { isReverse, value } ) {
 		const { onMerge, onRemove } = this.props;
 
 		if ( onMerge ) {
@@ -110,7 +110,7 @@ class RichTextWraper extends Component {
 		// an intentional user interaction distinguishing between Backspace and
 		// Delete to remove the empty field, but also to avoid merge & remove
 		// causing destruction of two fields (merge, then removed merged).
-		if ( onRemove && isValueEmpty && isReverse ) {
+		if ( onRemove && ! isEmpty( value ) && isReverse ) {
 			onRemove( ! isReverse );
 		}
 	}
@@ -444,20 +444,18 @@ const RichTextContainer = compose( [
 ] )( RichTextWraper );
 
 RichTextContainer.Content = ( { value, tagName: Tag, multiline, ...props } ) => {
-	let html = value;
-
 	// Handle deprecated `children` and `node` sources.
 	if ( Array.isArray( value ) ) {
-		html = children.toHTML( value );
+		value = children.toHTML( value );
 	}
 
 	const MultilineTag = getMultilineTag( multiline );
 
-	if ( ! html && MultilineTag ) {
-		html = `<${ MultilineTag }></${ MultilineTag }>`;
+	if ( ! value && MultilineTag ) {
+		value = `<${ MultilineTag }></${ MultilineTag }>`;
 	}
 
-	const content = <RawHTML>{ html }</RawHTML>;
+	const content = <RawHTML>{ value }</RawHTML>;
 
 	if ( Tag ) {
 		return <Tag { ...omit( props, [ 'format' ] ) }>{ content }</Tag>;
@@ -466,13 +464,8 @@ RichTextContainer.Content = ( { value, tagName: Tag, multiline, ...props } ) => 
 	return content;
 };
 
-RichTextContainer.isEmpty = ( value = '' ) => {
-	// Handle deprecated `children` and `node` sources.
-	if ( Array.isArray( value ) ) {
-		return ! value || value.length === 0;
-	}
-
-	return value.length === 0;
+RichTextContainer.isEmpty = ( value ) => {
+	return ! value || value.length === 0;
 };
 
 RichTextContainer.Content.defaultProps = {
