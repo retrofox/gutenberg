@@ -513,8 +513,9 @@ export class TableEdit extends Component {
 					</table>
 					{ /*
 					   * Use a figcaption, which is visibly hidden and a separate RichText for updating
-					   * the caption. Screenreaders seem to have issues announcing the caption of a
-					   * RichText contenteditable, having two elements is a workaround for the problem.
+					   * the caption. Screenreaders seem to have issues announcing the figure when figcaption
+					   * is rendered using a RichText. The cause is the extra wrapping divs added by the RichText.
+					   * Using two elements is a workaround for the problem.
 					   */ }
 					<figcaption id={ captionId } className="screen-reader-text">{ caption }</figcaption>
 					<RichText
