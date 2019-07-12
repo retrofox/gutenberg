@@ -6,7 +6,6 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { compose, withInstanceId } from '@wordpress/compose';
 import { Component } from '@wordpress/element';
 import {
 	InspectorControls,
@@ -417,7 +416,7 @@ export class TableEdit extends Component {
 			setBackgroundColor,
 			setAttributes,
 			isSelected,
-			instanceId,
+			clientId,
 		} = this.props;
 		const { initialRowCount, initialColumnCount } = this.state;
 		const { hasFixedLayout, caption, head, body, foot } = attributes;
@@ -460,7 +459,8 @@ export class TableEdit extends Component {
 			'has-background': !! backgroundColor.color,
 		} );
 
-		const captionId = `wp-block-table-caption-${ instanceId }`;
+		// Append the client id to the caption id to ensure no two table block captions can have clashing ids.
+		const captionId = `wp-block-table-caption-${ clientId }`;
 
 		return (
 			<>
@@ -535,7 +535,4 @@ export class TableEdit extends Component {
 	}
 }
 
-export default compose(
-	withInstanceId,
-	withCustomBackgroundColors( 'backgroundColor' )
-)( TableEdit );
+export default withCustomBackgroundColors( 'backgroundColor' )( TableEdit );
