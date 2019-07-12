@@ -165,6 +165,16 @@ describe( 'Table', () => {
 		await page.keyboard.type( 'Caption!' );
 
 		// Expect the post to have the correct written content inside the table.
-		expect( await getEditedPostContent() ).toMatchSnapshot();
+		// Use a regular expression since the `captionId` might not be consistent with a snapshot.
+		const regExp = new RegExp( [
+			`<!-- wp:table -->\n`,
+			`\s*<figure class="wp-block-table">`,
+			`<table class="" aria-labelledby="wp-block-table-caption-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\">.*<\/table>`,
+			`<figcaption id=\"wp-block-table-caption-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\">Caption!<\/figcaption>`,
+			`<\/figure>\n`,
+			`\s*<!-- \/wp:table -->`,
+
+		].join( '' ) );
+		expect( await getEditedPostContent() ).toMatch( regExp );
 	} );
 } );
