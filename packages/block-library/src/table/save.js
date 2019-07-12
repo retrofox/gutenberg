@@ -31,7 +31,7 @@ export default function save( { attributes } ) {
 		'has-background': !! backgroundClass,
 	} );
 
-	const hasCaption = RichText.isEmpty( caption );
+	const hasCaption = ! RichText.isEmpty( caption );
 
 	const Section = ( { type, rows } ) => {
 		if ( ! rows.length ) {
@@ -65,7 +65,7 @@ export default function save( { attributes } ) {
 				<Section type="body" rows={ body } />
 				<Section type="foot" rows={ foot } />
 			</table>
-			{ ! hasCaption && (
+			{ hasCaption && (
 				<RichText.Content
 					id={ captionId }
 					tagName="figcaption"
