@@ -18,26 +18,6 @@ export default function edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<h2><small>Notes</small></h2>
-			<style
-				dangerouslySetInnerHTML={ {
-					__html: `
-body {
-counter-reset: footnotes;
-}
-
-.editor-styles-wrapper a.note-anchor {
-counter-increment: footnotes;
-}
-
-.note-anchor:after {
-margin-left: 2px;
-content: '[' counter( footnotes ) ']';
-vertical-align: super;
-font-size: smaller;
-}
-`,
-				} }
-			/>
 			{ footnotes.map( ( { id, text, isSelected }, index ) =>
 				<ol
 					key={ id }
