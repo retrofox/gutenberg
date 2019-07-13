@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import classnames from 'classnames';
-
-/**
  * WordPress dependencies
  */
 import { Component } from '@wordpress/element';
@@ -12,14 +7,15 @@ import {
 	withDispatch,
 } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { __ } from '@wordpress/i18n';
+import { getBlockType } from '@wordpress/blocks';
 
 class BlockList extends Component {
 	constructor() {
 		super( ...arguments );
 		this.updateList = this.updateList.bind( this );
 		this.state = {
-			notes: [],
+			order: [],
+			selected: null,
 		};
 	}
 
@@ -40,88 +36,54 @@ class BlockList extends Component {
 	}
 
 	updateList() {
-		// This is much faster than having to search all attributes for text
-		// and parse the HTML. Perhaps this should also be debounced.
+		// This is much faster than having to serialize the blocks and search
+		// the HTML. Perhaps this should also be debounced.
 		const noteAnchors = document.querySelectorAll( '.note-anchor' );
-		const notes = Array.from( noteAnchors ).map( ( element ) => {
-			return {
-				id: ( element.getAttribute( 'href' ) || '' ).slice( 1 ),
-				isSelected: document.activeElement.isContentEditable && document.activeElement.contains( element ) && !! element.getAttribute( 'data-rich-text-format-boundary' ),
-			};
+		let selected;
+		const order = Array.from( noteAnchors ).map( ( element ) => {
+			const id = ( element.getAttribute( 'href' ) || '' ).slice( 1 );
+
+			if (
+				document.activeElement.isContentEditable &&
+				document.activeElement.contains( element ) &&
+				!! element.getAttribute( 'data-rich-text-format-boundary' )
+			) {
+				selected = id;
+			}
+
+			return id;
 		} );
 
-		this.setState( { notes } );
+		this.setState( { order, selected } );
 	}
 
 	render() {
-		const {
-			footnotes,
-			updateFootnotes,
-		} = this.props;
+		const { updateFootnotes } = this.props;
+		const { order, selected } = this.state;
 
-		if ( ! this.state.notes.length ) {
+		if ( ! order.length ) {
 			return null;
 		}
 
+		const { edit: BlockEdit } = getBlockType( 'core/footnotes' );
+		const attributes = {
+			footnotes: order.map( ( id ) => {
+				const text = this.props.footnotes[ id ];
+				const isSelected = selected === id;
+				return { id, text, isSelected };
+			} ),
+		};
+		const setAttributes = ( { footnotes } ) => {
+			updateFootnotes( footnotes.reduce( ( acc, footnote ) => {
+				return { ...acc, [ footnote.id ]: footnote.text };
+			}, {} ) );
+		};
+
 		return (
-			<>
-				<h2><small>Notes</small></h2>
-				<style
-					dangerouslySetInnerHTML={ {
-						__html: `
-body {
-counter-reset: footnotes;
-}
-
-.editor-styles-wrapper a.note-anchor {
-counter-increment: footnotes;
-}
-
-.note-anchor:after {
-margin-left: 2px;
-content: '[' counter( footnotes ) ']';
-vertical-align: super;
-font-size: smaller;
-}
-`,
-					} }
-				/>
-				{ this.state.notes.map( ( { id, isSelected }, index ) =>
-					<ol
-						key={ id }
-						start={ index + 1 }
-						className={ classnames( 'note-list', {
-							'is-selected': isSelected,
-						} ) }
-					>
-						<li id={ id }>
-							<a
-								href={ `#${ id }-anchor` }
-								aria-label={ __( 'Back to content' ) }
-								onClick={ () => {
-									// This is a hack to get the target to focus.
-									// The attribute will later be removed when selection is set.
-									document.getElementById( `${ id }-anchor` ).contentEditable = 'false';
-								} }
-							>
-								↑
-							</a>
-							{ ' ' }
-							<input
-								aria-label={ __( 'Note' ) }
-								value={ footnotes[ id ] || '' }
-								onChange={ ( event ) => {
-									updateFootnotes( {
-										...footnotes,
-										[ id ]: event.target.value,
-									} );
-								} }
-								placeholder={ __( 'Note' ) }
-							/>
-						</li>
-					</ol>
-				) }
-			</>
+			<BlockEdit
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+			/>
 		);
 	}
 }

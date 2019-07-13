@@ -1,16 +1,16 @@
 export default function save( { attributes } ) {
-	const { footnotes, order } = attributes;
+	const { footnotes } = attributes;
 
-	if ( ! order.length ) {
+	if ( ! footnotes.length ) {
 		return null;
 	}
 
 	return (
 		<ol>
-			{ order.map( ( id ) =>
+			{ footnotes.map( ( { id, text } ) =>
 				<li key={ id }>
 					<a id={ id } href={ `#${ id }-anchor` }>^</a>
-					{ footnotes[ id ] }
+					{ text }
 				</li>
 			) }
 		</ol>

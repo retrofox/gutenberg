@@ -817,26 +817,28 @@ export const getEditedPostContent = createSelector(
 		}
 
 		const blocks = getBlocksForSerialization( state );
-		const footnotes = getFootnotes( state );
+		const unorderedFootnotes = getFootnotes( state );
 		let content = serialize( blocks );
 
-		if ( Object.keys( footnotes ).length ) {
+		if ( Object.keys( unorderedFootnotes ).length ) {
 			const pageDelimiter = '<!-- wp:nextpage -->';
 
 			content = content.split( pageDelimiter ).map( ( piece, index, array ) => {
-				const order = [];
+				const footnotes = [];
 				const regExp = /data-note="([a-z0-9-]+)"/g;
 				let result;
 
 				while ( ( result = regExp.exec( piece ) ) !== null ) {
-					order.push( result[ 1 ] );
+					const id = result[ 1 ];
+					const text = unorderedFootnotes[ id ];
+					footnotes.push( { id, text } );
 				}
 
-				if ( ! order.length ) {
+				if ( ! footnotes.length ) {
 					return piece;
 				}
 
-				const block = createBlock( 'core/footnotes', { footnotes, order } );
+				const block = createBlock( 'core/footnotes', { footnotes } );
 				const html = serialize( block );
 				const isLastIndex = array.length - 1 === index;
 

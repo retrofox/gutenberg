@@ -167,10 +167,12 @@ export function* setupEditor( post, edits, template ) {
 		content = post.content.raw;
 	}
 
-	let footnotes = {};
+	const footnotes = {};
 	let blocks = parse( content ).filter( ( { name, attributes } ) => {
 		if ( name === 'core/footnotes' ) {
-			footnotes = { ...footnotes, ...attributes.footnotes };
+			attributes.footnotes.forEach( ( { id, text } ) => {
+				footnotes[ id ] = text;
+			} );
 			return false;
 		}
 
