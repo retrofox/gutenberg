@@ -21,6 +21,7 @@ class BlockList extends Component {
 
 	componentDidMount() {
 		document.addEventListener( 'selectionchange', this.updateList );
+		this.updateList();
 	}
 
 	componentWillUnmount() {

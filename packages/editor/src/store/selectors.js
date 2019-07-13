@@ -818,34 +818,42 @@ export const getEditedPostContent = createSelector(
 
 		const blocks = getBlocksForSerialization( state );
 		const unorderedFootnotes = getFootnotes( state );
-		let content = serialize( blocks );
+		const hasFootnotes = Object.keys( unorderedFootnotes ).length;
 
-		if ( Object.keys( unorderedFootnotes ).length ) {
-			const pageDelimiter = '<!-- wp:nextpage -->';
+		let content;
 
-			content = content.split( pageDelimiter ).map( ( piece, index, array ) => {
+		if ( hasFootnotes ) {
+			// Footnotes must be generated at the end of each page.
+			// The footnote order can only de deduced from the serialised HTML.
+			content = blocks.reduce( ( acc, block ) => {
+				if ( block.name === 'core/nextpage' ) {
+					acc.push( [] );
+				}
+
+				acc[ acc.length - 1 ].push( block );
+
+				return acc;
+			}, [ [] ] ).map( ( group ) => {
+				const html = serialize( group );
 				const footnotes = [];
 				const regExp = /data-note="([a-z0-9-]+)"/g;
 				let result;
 
-				while ( ( result = regExp.exec( piece ) ) !== null ) {
+				while ( ( result = regExp.exec( html ) ) !== null ) {
 					const id = result[ 1 ];
 					const text = unorderedFootnotes[ id ];
 					footnotes.push( { id, text } );
 				}
 
 				if ( ! footnotes.length ) {
-					return piece;
+					return html;
 				}
 
 				const block = createBlock( 'core/footnotes', { footnotes } );
-				const html = serialize( block );
-				const isLastIndex = array.length - 1 === index;
-
-				const space = '\n\n';
-
-				return isLastIndex ? piece + space + html : piece + html + space;
-			} ).join( pageDelimiter );
+				return [ html, serialize( block ) ].join( '\n\n' );
+			} ).join( '\n\n' );
+		} else {
+			content = serialize( blocks );
 		}
 
 		// For compatibility purposes, treat a post consisting of a single
