@@ -9,10 +9,12 @@ import {
 import { compose } from '@wordpress/compose';
 import { getBlockType } from '@wordpress/blocks';
 
-class BlockList extends Component {
+class Footnotes extends Component {
 	constructor() {
 		super( ...arguments );
 		this.updateList = this.updateList.bind( this );
+		this.getAttributes = this.getAttributes.bind( this );
+		this.setAttributes = this.setAttributes.bind( this );
 		this.state = {
 			order: [],
 			selected: null,
@@ -58,32 +60,37 @@ class BlockList extends Component {
 		this.setState( { order, selected } );
 	}
 
-	render() {
-		const { updateFootnotes } = this.props;
+	getAttributes() {
+		const { footnotes } = this.props;
 		const { order, selected } = this.state;
-
-		if ( ! order.length ) {
-			return null;
-		}
-
-		const { edit: BlockEdit } = getBlockType( 'core/footnotes' );
-		const attributes = {
+		return {
 			footnotes: order.map( ( id ) => {
-				const text = this.props.footnotes[ id ];
+				const text = footnotes[ id ];
 				const isSelected = selected === id;
 				return { id, text, isSelected };
 			} ),
 		};
-		const setAttributes = ( { footnotes } ) => {
-			updateFootnotes( footnotes.reduce( ( acc, footnote ) => {
-				return { ...acc, [ footnote.id ]: footnote.text };
-			}, {} ) );
-		};
+	}
+
+	setAttributes( { footnotes } ) {
+		const { updateFootnotes } = this.props;
+
+		updateFootnotes( footnotes.reduce( ( acc, footnote ) => {
+			return { ...acc, [ footnote.id ]: footnote.text };
+		}, {} ) );
+	}
+
+	render() {
+		if ( ! this.state.order.length ) {
+			return null;
+		}
+
+		const { edit: BlockEdit } = getBlockType( 'core/footnotes' );
 
 		return (
 			<BlockEdit
-				attributes={ attributes }
-				setAttributes={ setAttributes }
+				attributes={ this.getAttributes() }
+				setAttributes={ this.setAttributes }
 			/>
 		);
 	}
@@ -91,23 +98,14 @@ class BlockList extends Component {
 
 export default compose( [
 	withSelect( ( select ) => {
-		const {
-			getEditorBlocks,
-			getFootnotes,
-		} = select( 'core/editor' );
-
+		const { getEditorBlocks, getFootnotes } = select( 'core/editor' );
 		return {
 			contentRef: getEditorBlocks(),
 			footnotes: getFootnotes(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const {
-			updateFootnotes,
-		} = dispatch( 'core/editor' );
-
-		return {
-			updateFootnotes,
-		};
+		const { updateFootnotes } = dispatch( 'core/editor' );
+		return { updateFootnotes };
 	} ),
-] )( BlockList );
+] )( Footnotes );
