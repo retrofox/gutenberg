@@ -45,3 +45,11 @@ function gutenberg_reregister_core_block_types() {
 	}
 }
 add_action( 'init', 'gutenberg_reregister_core_block_types' );
+
+add_filter( 'block_categories', function( $categories ) {
+	array_push( $categories, array(
+		'slug' => 'footnotes',
+		'title' => __( 'Footnotes' ),
+	) );
+	return $categories;
+} );

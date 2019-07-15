@@ -1,4 +1,9 @@
-export default function save( { attributes } ) {
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+export default function Save( { attributes } ) {
 	const { footnotes } = attributes;
 
 	if ( ! footnotes.length ) {
@@ -9,8 +14,14 @@ export default function save( { attributes } ) {
 		<ol>
 			{ footnotes.map( ( { id, text } ) =>
 				<li key={ id }>
-					<a id={ id } href={ `#${ id }-anchor` }>^</a>
-					{ text }
+					<a
+						id={ id }
+						href={ `#${ id }-anchor` }
+						aria-label={ __( 'Back to content' ) }
+					>
+						↑
+					</a>
+					{ ` ${ text }` }
 				</li>
 			) }
 		</ol>

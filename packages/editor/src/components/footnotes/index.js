@@ -41,7 +41,7 @@ class Footnotes extends Component {
 	updateList() {
 		// This is much faster than having to serialize the blocks and search
 		// the HTML. Perhaps this should also be debounced.
-		const noteAnchors = document.querySelectorAll( '.note-anchor' );
+		const noteAnchors = document.querySelectorAll( '.footnote-anchor' );
 		let selected;
 		const order = Array.from( noteAnchors ).map( ( element ) => {
 			const id = ( element.getAttribute( 'href' ) || '' ).slice( 1 );
@@ -85,10 +85,16 @@ class Footnotes extends Component {
 			return null;
 		}
 
-		const { edit: BlockEdit } = getBlockType( 'core/footnotes' );
+		const blockType = getBlockType( 'core/footnotes' );
+
+		if ( ! blockType ) {
+			return null;
+		}
+
+		const Edit = blockType.edit;
 
 		return (
-			<BlockEdit
+			<Edit
 				attributes={ this.getAttributes() }
 				setAttributes={ this.setAttributes }
 			/>

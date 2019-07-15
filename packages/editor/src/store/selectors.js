@@ -836,7 +836,7 @@ export const getEditedPostContent = createSelector(
 			}, [ [] ] ).map( ( group ) => {
 				const html = serialize( group );
 				const footnotes = [];
-				const regExp = /data-note="([a-z0-9-]+)"/g;
+				const regExp = /data-footnote-id="([a-z0-9-]+)"/g;
 				let result;
 
 				while ( ( result = regExp.exec( html ) ) !== null ) {

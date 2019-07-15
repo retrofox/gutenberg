@@ -1,6 +1,6 @@
 {
 	"name": "core/footnotes",
-	"category": "common",
+	"category": "footnotes",
 	"attributes": {
 		"footnotes": {
 			"type": "array"
