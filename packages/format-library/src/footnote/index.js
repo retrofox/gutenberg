@@ -27,7 +27,7 @@ const addFootnote = ( value ) => {
 		attributes: {
 			href: `#${ id }`,
 			id: `${ id }-anchor`,
-			'data-footnote-id': id,
+			'data-core-footnotes-id': id,
 		},
 	};
 
@@ -71,7 +71,7 @@ function Edit( { value, onChange, isActive } ) {
 	);
 }
 
-export const note = {
+export const footnote = {
 	name,
 	title,
 	tagName: 'a',

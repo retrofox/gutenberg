@@ -21,6 +21,7 @@ import {
 	getDefaultBlockName,
 	isUnmodifiedDefaultBlock,
 	createBlock,
+	getBlockTypes,
 } from '@wordpress/blocks';
 import { isInTheFuture, getDate } from '@wordpress/date';
 import { removep } from '@wordpress/autop';
@@ -835,22 +836,33 @@ export const getEditedPostContent = createSelector(
 				return acc;
 			}, [ [] ] ).map( ( group ) => {
 				const html = serialize( group );
-				const footnotes = [];
-				const regExp = /data-footnote-id="([a-z0-9-]+)"/g;
-				let result;
+				return getBlockTypes().reduce( ( accumulator, { category, name } ) => {
+					if ( category !== 'footnotes' ) {
+						return accumulator;
+					}
 
-				while ( ( result = regExp.exec( html ) ) !== null ) {
-					const id = result[ 1 ];
-					const text = unorderedFootnotes[ id ];
-					footnotes.push( { id, text } );
-				}
+					const attributePart = name.replace( '/', '-' );
 
-				if ( ! footnotes.length ) {
-					return html;
-				}
+					const footnotes = [];
+					const regExp = new RegExp( `data-${ attributePart }-id="([a-z0-9-]+)"`, 'g' );
+					let result;
 
-				const block = createBlock( 'core/footnotes', { footnotes } );
-				return [ html, serialize( block ) ].join( '\n\n' );
+					while ( ( result = regExp.exec( html ) ) !== null ) {
+						const id = result[ 1 ];
+						const text = unorderedFootnotes[ id ];
+						footnotes.push( { id, text } );
+					}
+
+					if ( ! footnotes.length ) {
+						return accumulator;
+					}
+
+					const block = createBlock( name, { footnotes } );
+
+					accumulator.push( serialize( block ) );
+
+					return accumulator;
+				}, [ html ] ).join( '\n\n' );
 			} ).join( '\n\n' );
 		} else {
 			content = serialize( blocks );

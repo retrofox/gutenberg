@@ -12,6 +12,7 @@ import { dispatch, select, apiFetch } from '@wordpress/data-controls';
 import {
 	parse,
 	synchronizeBlocksWithTemplate,
+	getBlockTypes,
 } from '@wordpress/blocks';
 import isShallowEqual from '@wordpress/is-shallow-equal';
 
@@ -167,9 +168,19 @@ export function* setupEditor( post, edits, template ) {
 		content = post.content.raw;
 	}
 
+	const footnoteBlockNames = new Set( getBlockTypes().reduce(
+		( accumulator, { name, category } ) => {
+			if ( category === 'footnotes' ) {
+				accumulator.push( name );
+			}
+
+			return accumulator;
+		}, [] )
+	);
+
 	const footnotes = {};
 	let blocks = parse( content ).filter( ( { name, attributes } ) => {
-		if ( name === 'core/footnotes' ) {
+		if ( footnoteBlockNames.has( name ) ) {
 			attributes.footnotes.forEach( ( { id, text } ) => {
 				footnotes[ id ] = text;
 			} );
