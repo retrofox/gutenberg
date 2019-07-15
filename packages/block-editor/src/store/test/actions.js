@@ -124,14 +124,10 @@ describe( 'actions', () => {
 			};
 
 			const replaceBlockGenerator = replaceBlock( 'chicken', block );
-			expect(
-				replaceBlockGenerator.next().value,
-			).toEqual( {
-				args: [],
-				selectorName: 'getSettings',
-				storeName: 'core/block-editor',
-				type: 'SELECT',
-			} );
+
+			// Skip getSettings select.
+			replaceBlockGenerator.next();
+
 			expect(
 				replaceBlockGenerator.next().value,
 			).toEqual( {
@@ -188,14 +184,10 @@ describe( 'actions', () => {
 			} ];
 
 			const replaceBlockGenerator = replaceBlocks( [ 'chicken' ], blocks );
-			expect(
-				replaceBlockGenerator.next().value,
-			).toEqual( {
-				args: [],
-				selectorName: 'getSettings',
-				storeName: 'core/block-editor',
-				type: 'SELECT',
-			} );
+
+			// Skip getSettings select.
+			replaceBlockGenerator.next();
+
 			expect(
 				replaceBlockGenerator.next().value,
 			).toEqual( {
@@ -241,14 +233,10 @@ describe( 'actions', () => {
 			} ];
 
 			const replaceBlockGenerator = replaceBlocks( [ 'chicken' ], blocks );
-			expect(
-				replaceBlockGenerator.next().value,
-			).toEqual( {
-				args: [],
-				selectorName: 'getSettings',
-				storeName: 'core/block-editor',
-				type: 'SELECT',
-			} );
+
+			// Skip getSettings select.
+			replaceBlockGenerator.next();
+
 			expect(
 				replaceBlockGenerator.next().value,
 			).toEqual( {
@@ -312,14 +300,10 @@ describe( 'actions', () => {
 			const index = 5;
 
 			const insertBlockGenerator = insertBlock( block, index, 'testclientid', true );
-			expect(
-				insertBlockGenerator.next().value,
-			).toEqual( {
-				args: [],
-				selectorName: 'getSettings',
-				storeName: 'core/block-editor',
-				type: 'SELECT',
-			} );
+
+			// Skip getSettings select.
+			insertBlockGenerator.next();
+
 			expect(
 				insertBlockGenerator.next().value
 			).toEqual( {
@@ -366,14 +350,10 @@ describe( 'actions', () => {
 			];
 
 			const insertBlocksGenerator = insertBlocks( blocks, 5, 'testrootid', false );
-			expect(
-				insertBlocksGenerator.next().value,
-			).toEqual( {
-				args: [],
-				selectorName: 'getSettings',
-				storeName: 'core/block-editor',
-				type: 'SELECT',
-			} );
+
+			// Skip getSettings select.
+			insertBlocksGenerator.next();
+
 			expect(
 				insertBlocksGenerator.next().value
 			).toEqual( {
@@ -431,14 +411,10 @@ describe( 'actions', () => {
 			];
 
 			const insertBlocksGenerator = insertBlocks( blocks, 5, 'testrootid', false );
-			expect(
-				insertBlocksGenerator.next().value,
-			).toEqual( {
-				args: [],
-				selectorName: 'getSettings',
-				storeName: 'core/block-editor',
-				type: 'SELECT',
-			} );
+
+			// Skip getSettings select.
+			insertBlocksGenerator.next();
+
 			expect(
 				insertBlocksGenerator.next().value
 			).toEqual( {

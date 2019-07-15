@@ -188,9 +188,9 @@ export function hideBlockTypes( blockNames ) {
  *
  * @return {Object} Action object.
  */
-export function updateAutoApplyBlockStyles( blockName, blockStyle ) {
+export function updateDefaultBlockStyles( blockName, blockStyle ) {
 	return {
-		type: 'UPDATE_AUTO_APPLY_BLOCK_STYLES',
+		type: 'UPDATE_DEFAULT_BLOCK_STYLES',
 		blockName,
 		blockStyle,
 	};

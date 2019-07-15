@@ -39,15 +39,15 @@ class Editor extends Component {
 		focusMode,
 		hiddenBlockTypes,
 		blockTypes,
-		autoApplyBlockStyles,
-		onUpdateAutoApplyBlockStyles,
+		defaultBlockStyles,
+		onUpdateDefaultBlockStyles,
 	) {
 		settings = {
 			...settings,
-			autoApplyBlockStyles,
+			defaultBlockStyles,
 			hasFixedToolbar,
 			focusMode,
-			onUpdateAutoApplyBlockStyles,
+			onUpdateDefaultBlockStyles,
 		};
 
 		// Omit hidden block types if exists and non-empty.
@@ -72,7 +72,7 @@ class Editor extends Component {
 
 	render() {
 		const {
-			autoApplyBlockStyles,
+			defaultBlockStyles,
 			settings,
 			hasFixedToolbar,
 			focusMode,
@@ -82,7 +82,7 @@ class Editor extends Component {
 			onError,
 			hiddenBlockTypes,
 			blockTypes,
-			onUpdateAutoApplyBlockStyles,
+			onUpdateDefaultBlockStyles,
 			...props
 		} = this.props;
 
@@ -96,8 +96,8 @@ class Editor extends Component {
 			focusMode,
 			hiddenBlockTypes,
 			blockTypes,
-			autoApplyBlockStyles,
-			onUpdateAutoApplyBlockStyles,
+			defaultBlockStyles,
+			onUpdateDefaultBlockStyles,
 		);
 
 		return (
@@ -135,15 +135,15 @@ export default compose( [
 			hasFixedToolbar: isFeatureActive( 'fixedToolbar' ),
 			focusMode: isFeatureActive( 'focusMode' ),
 			post: getEntityRecord( 'postType', postType, postId ),
-			autoApplyBlockStyles: getPreference( 'autoApplyBlockStyles' ),
+			defaultBlockStyles: getPreference( 'defaultBlockStyles' ),
 			hiddenBlockTypes: getPreference( 'hiddenBlockTypes' ),
 			blockTypes: getBlockTypes(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateAutoApplyBlockStyles } = dispatch( 'core/edit-post' );
+		const { updateDefaultBlockStyles } = dispatch( 'core/edit-post' );
 		return {
-			onUpdateAutoApplyBlockStyles: updateAutoApplyBlockStyles,
+			onUpdateDefaultBlockStyles: updateDefaultBlockStyles,
 		};
 	} ),
 ] )( Editor );

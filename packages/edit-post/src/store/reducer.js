@@ -136,9 +136,9 @@ export const preferences = flow( [
 
 		return state;
 	},
-	autoApplyBlockStyles( state, action ) {
+	defaultBlockStyles( state, action ) {
 		switch ( action.type ) {
-			case 'UPDATE_AUTO_APPLY_BLOCK_STYLES': {
+			case 'UPDATE_DEFAULT_BLOCK_STYLES': {
 				if ( ! action.blockName ) {
 					return state;
 				}

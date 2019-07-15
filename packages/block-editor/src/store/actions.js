@@ -218,19 +218,19 @@ export function toggleSelection( isSelectionEnabled = true ) {
 	};
 }
 
-function getBlocksWithAutoApplyStyles( blocks, blockEditorSettings ) {
+function getBlocksWithDefaultStylesApplied( blocks, blockEditorSettings ) {
+	const defaultBlockStyles = get( blockEditorSettings, [ 'defaultBlockStyles' ], {} );
 	return blocks.map( ( block ) => {
-		const autoApplyBlockStyles = get( blockEditorSettings, [ 'autoApplyBlockStyles' ], {} );
 		const blockName = block.name;
-		if ( ! autoApplyBlockStyles[ blockName ] ) {
+		if ( ! defaultBlockStyles[ blockName ] ) {
 			return block;
 		}
 		const className = get( block, [ 'attributes', 'className' ] );
 		if ( includes( className, 'is-style-' ) ) {
 			return block;
 		}
-		const attributes = block.attributes || {};
-		const blockStyle = autoApplyBlockStyles[ blockName ];
+		const { attributes = {} } = block;
+		const blockStyle = defaultBlockStyles[ blockName ];
 		return {
 			...block,
 			attributes: {
@@ -254,7 +254,7 @@ function getBlocksWithAutoApplyStyles( blocks, blockEditorSettings ) {
  */
 export function* replaceBlocks( clientIds, blocks, indexToSelect ) {
 	clientIds = castArray( clientIds );
-	blocks = getBlocksWithAutoApplyStyles(
+	blocks = getBlocksWithDefaultStylesApplied(
 		castArray( blocks ),
 		yield select(
 			'core/block-editor',
@@ -421,7 +421,7 @@ export function* insertBlocks(
 	rootClientId,
 	updateSelection = true
 ) {
-	blocks = getBlocksWithAutoApplyStyles(
+	blocks = getBlocksWithDefaultStylesApplied(
 		castArray( blocks ),
 		yield select(
 			'core/block-editor',

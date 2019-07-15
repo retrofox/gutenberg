@@ -11,5 +11,5 @@ export const PREFERENCES_DEFAULTS = {
 	},
 	pinnedPluginItems: {},
 	hiddenBlockTypes: [],
-	autoApplyBlockStyles: {},
+	defaultBlockStyles: {},
 };
