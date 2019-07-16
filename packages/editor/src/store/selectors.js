@@ -884,6 +884,7 @@ export const getEditedPostContent = createSelector(
 	},
 	( state ) => [
 		state.editor.present.blocks.value,
+		state.editor.present.blocks.footnotes,
 		state.editor.present.edits.content,
 		state.initialEdits.content,
 	],
@@ -1212,7 +1213,7 @@ export function getEditorSettings( state ) {
  * @return {Object} The footnotes.
  */
 export function getFootnotes( state ) {
-	return state.editor.present.footnotes;
+	return state.editor.present.blocks.footnotes;
 }
 
 /*

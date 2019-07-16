@@ -205,6 +205,7 @@ class BlockList extends Component {
 			hasMultiSelection,
 			renderAppender,
 			enableAnimation,
+			children,
 		} = this.props;
 
 		return (
@@ -241,6 +242,8 @@ class BlockList extends Component {
 					rootClientId={ rootClientId }
 					renderAppender={ renderAppender }
 				/>
+
+				{ children }
 			</div>
 		);
 	}

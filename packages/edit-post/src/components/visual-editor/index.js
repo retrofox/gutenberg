@@ -32,8 +32,9 @@ function VisualEditor() {
 				<ObserveTyping>
 					<CopyHandler>
 						<PostTitle />
-						<BlockList />
-						<Footnotes />
+						<BlockList>
+							<Footnotes />
+						</BlockList>
 					</CopyHandler>
 				</ObserveTyping>
 			</WritingFlow>
