@@ -46,10 +46,22 @@ function gutenberg_reregister_core_block_types() {
 }
 add_action( 'init', 'gutenberg_reregister_core_block_types' );
 
-add_filter( 'block_categories', function( $categories ) {
-	array_push( $categories, array(
-		'slug' => 'footnotes',
-		'title' => __( 'Footnotes' ),
-	) );
+/**
+ * Adds the `footnotes` block category.
+ *
+ * @param string $categories The categories to filter.
+ *
+ * @return string The filtered categories.
+ */
+function gutenberg_add_block_categories( $categories ) {
+	array_push(
+		$categories,
+		array(
+			'slug'  => 'footnotes',
+			'title' => __( 'Footnotes', 'gutenberg' ),
+		)
+	);
+
 	return $categories;
-} );
+}
+add_filter( 'block_categories', 'gutenberg_add_block_categories' );
