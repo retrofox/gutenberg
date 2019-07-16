@@ -38,7 +38,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				{ ' ' }
 				<input
 					aria-label={ __( 'Note' ) }
-					value={ text || '' }
+					value={ text }
 					onChange={ ( event ) => {
 						setAttributes( {
 							footnotes: footnotes.map( ( footnote, i ) => {

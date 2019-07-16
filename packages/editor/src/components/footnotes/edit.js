@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { debounce } from 'lodash';
+
+/**
  * WordPress dependencies
  */
 import { Component } from '@wordpress/element';
@@ -6,12 +11,13 @@ import {
 	withSelect,
 	withDispatch,
 } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
+import { compose, withSafeTimeout } from '@wordpress/compose';
 
 class Edit extends Component {
 	constructor() {
 		super( ...arguments );
 		this.updateList = this.updateList.bind( this );
+		this.debouncedUpdateList = debounce( this.updateList.bind( this ), 100 );
 		this.getAttributes = this.getAttributes.bind( this );
 		this.setAttributes = this.setAttributes.bind( this );
 		this.state = {
@@ -21,12 +27,15 @@ class Edit extends Component {
 	}
 
 	componentDidMount() {
-		document.addEventListener( 'selectionchange', this.updateList );
-		this.updateList();
+		// Hack: need to wait for selection to be stored in editor store.
+		document.addEventListener( 'selectionchange', this.debouncedUpdateList );
+
+		// Wait for the DOM to update.
+		this.props.setTimeout( this.updateList );
 	}
 
 	componentWillUnmount() {
-		document.removeEventListener( 'selectionchange', this.updateList );
+		document.removeEventListener( 'selectionchange', this.debouncedUpdateList );
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -34,7 +43,8 @@ class Edit extends Component {
 			return;
 		}
 
-		this.updateList();
+		// Wait for the DOM to update.
+		this.props.setTimeout( this.updateList );
 	}
 
 	updateList() {
@@ -44,7 +54,7 @@ class Edit extends Component {
 		// This is much faster than having to serialize the blocks and search
 		// the HTML. Perhaps this should also be debounced.
 		const anchors = document.querySelectorAll( `[${ attribute }]` );
-		let selected;
+		let selectedId;
 		const order = Array.from( anchors ).map( ( element ) => {
 			const id = ( element.getAttribute( 'href' ) || '' ).slice( 1 );
 
@@ -53,22 +63,22 @@ class Edit extends Component {
 				document.activeElement.contains( element ) &&
 				!! element.getAttribute( 'data-rich-text-format-boundary' )
 			) {
-				selected = id;
+				selectedId = id;
 			}
 
 			return id;
 		} );
 
-		this.setState( { order, selected } );
+		this.setState( { order, selectedId } );
 	}
 
 	getAttributes() {
 		const { footnotes } = this.props;
-		const { order, selected } = this.state;
+		const { order, selectedId } = this.state;
 		return {
 			footnotes: order.map( ( id ) => {
-				const text = footnotes[ id ];
-				const isSelected = selected === id;
+				const text = footnotes[ id ] || '';
+				const isSelected = selectedId === id;
 				return { id, text, isSelected };
 			} ),
 		};
@@ -98,6 +108,7 @@ class Edit extends Component {
 }
 
 export default compose( [
+	withSafeTimeout,
 	withSelect( ( select ) => {
 		const { getEditorBlocks, getFootnotes } = select( 'core/editor' );
 		return {
