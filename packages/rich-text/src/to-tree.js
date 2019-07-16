@@ -248,7 +248,7 @@ export function toTree( {
 				attributes: isEditableTree ? {
 					'data-rich-text-line-break': 'true',
 				} : undefined,
-				object: true,
+				selfClosing: true,
 			} );
 			// Ensure pointer is text node.
 			pointer = append( getParent( pointer ), '' );
