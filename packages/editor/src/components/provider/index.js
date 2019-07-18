@@ -140,6 +140,8 @@ class EditorProvider extends Component {
 			canUserUseUnfilteredHTML,
 			children,
 			blocks,
+			selectionStart,
+			selectionEnd,
 			resetEditorBlocks,
 			isReady,
 			settings,
@@ -164,6 +166,8 @@ class EditorProvider extends Component {
 				value={ blocks }
 				onInput={ resetEditorBlocksWithoutUndoLevel }
 				onChange={ resetEditorBlocks }
+				selectionStart={ selectionStart }
+				selectionEnd={ selectionEnd }
 				settings={ editorSettings }
 				useSubRegistry={ false }
 			>
@@ -182,6 +186,8 @@ export default compose( [
 			canUserUseUnfilteredHTML,
 			__unstableIsEditorReady: isEditorReady,
 			getEditorBlocks,
+			getEditorSelectionStart,
+			getEditorSelectionEnd,
 			__experimentalGetReusableBlocks,
 		} = select( 'core/editor' );
 		const { canUser } = select( 'core' );
@@ -190,6 +196,8 @@ export default compose( [
 			canUserUseUnfilteredHTML: canUserUseUnfilteredHTML(),
 			isReady: isEditorReady(),
 			blocks: getEditorBlocks(),
+			selectionStart: getEditorSelectionStart(),
+			selectionEnd: getEditorSelectionEnd(),
 			reusableBlocks: __experimentalGetReusableBlocks(),
 			hasUploadPermissions: defaultTo( canUser( 'create', 'media' ), true ),
 		};
@@ -208,11 +216,18 @@ export default compose( [
 			setupEditor,
 			updatePostLock,
 			createWarningNotice,
-			resetEditorBlocks,
+			resetEditorBlocks( blocks, selectionStart, selectionEnd ) {
+				resetEditorBlocks( blocks, {
+					selectionStart,
+					selectionEnd,
+				} );
+			},
 			updateEditorSettings,
-			resetEditorBlocksWithoutUndoLevel( blocks ) {
+			resetEditorBlocksWithoutUndoLevel( blocks, selectionStart, selectionEnd ) {
 				resetEditorBlocks( blocks, {
 					__unstableShouldCreateUndoLevel: false,
+					selectionStart,
+					selectionEnd,
 				} );
 			},
 			tearDownEditor: __experimentalTearDownEditor,
