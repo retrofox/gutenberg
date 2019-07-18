@@ -12,6 +12,12 @@ exports[`Table allows adding and deleting columns across the table header, body 
 <!-- /wp:table -->"
 `;
 
+exports[`Table allows cells to be selected when the cell area outside of the RichText is clicked 1`] = `
+"<!-- wp:table {\\"hasFixedLayout\\":true} -->
+<figure class=\\"wp-block-table\\"><table class=\\"has-fixed-layout\\"><tbody><tr><td>Some long text that will wrap onto multiple lines.</td><td>This content is in the second cell.</td></tr><tr><td></td><td></td></tr></tbody></table></figure>
+<!-- /wp:table -->"
+`;
+
 exports[`Table allows header and footer rows to be switched on and off 1`] = `
 "<!-- wp:table -->
 <figure class=\\"wp-block-table\\"><table class=\\"\\"><thead><tr><th>header</th><th></th></tr></thead><tbody><tr><td>body</td><td></td></tr><tr><td></td><td></td></tr></tbody><tfoot><tr><td>footer</td><td></td></tr></tfoot></table></figure>
