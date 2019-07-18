@@ -25,6 +25,7 @@ import {
 import { KeyboardShortcuts, withFilters } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import {
+	useSelect,
 	withDispatch,
 	withSelect,
 } from '@wordpress/data';
@@ -251,8 +252,9 @@ function BlockListBlock( {
 		}
 	}, [ isFirstMultiSelected ] );
 
+	const isTyping = useSelect( ( select ) => select( 'core/block-editor' ).isTyping() );
 	// Block Reordering animation
-	const style = useMovingAnimation( wrapper, isSelected || isPartOfMultiSelection, enableAnimation, animateOnChange );
+	const style = useMovingAnimation( wrapper, isSelected || isPartOfMultiSelection, enableAnimation && ! isTyping, animateOnChange );
 
 	// Other event handlers
 
