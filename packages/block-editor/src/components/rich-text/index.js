@@ -255,6 +255,7 @@ class RichTextWrapper extends Component {
 
 	render() {
 		const {
+			isReadOnly,
 			tagName,
 			value: originalValue,
 			onChange: originalOnChange,
@@ -307,6 +308,7 @@ class RichTextWrapper extends Component {
 		return (
 			<RichText
 				{ ...experimentalProps }
+				isReadOnly={ isReadOnly }
 				value={ adjustedValue }
 				onChange={ adjustedOnChange }
 				selectionStart={ selectionStart }
@@ -375,8 +377,11 @@ const RichTextContainer = compose( [
 			getSelectionStart,
 			getSelectionEnd,
 			getSettings,
+			getBlockRootClientId,
+			getTemplateLock,
 		} = select( 'core/block-editor' );
 
+		const isReadOnly = getTemplateLock( getBlockRootClientId( clientId ) ) === 'readonly';
 		const selectionStart = getSelectionStart();
 		const selectionEnd = getSelectionEnd();
 		const { __experimentalCanUserUseUnfilteredHTML } = getSettings();
@@ -393,6 +398,7 @@ const RichTextContainer = compose( [
 			selectionStart: isSelected ? selectionStart.offset : undefined,
 			selectionEnd: isSelected ? selectionEnd.offset : undefined,
 			isSelected,
+			isReadOnly,
 		};
 	} ),
 	withDispatch( ( dispatch, {
@@ -419,12 +425,7 @@ const RichTextContainer = compose( [
 	withFilters( 'experimentalRichText' ),
 ] )( RichTextWrapper );
 
-RichTextContainer.Content = ( {
-	value,
-	tagName: Tag,
-	multiline,
-	...props
-} ) => {
+RichTextContainer.Content = ( { value, tagName: Tag, multiline, ...props } ) => {
 	let html = value;
 	let MultilineTag;
 
@@ -441,16 +442,13 @@ RichTextContainer.Content = ( {
 		html = `<${ MultilineTag }></${ MultilineTag }>`;
 	}
 
-	if ( ! Tag ) {
-		return <RawHTML>{ html }</RawHTML>;
+	const content = <RawHTML>{ html }</RawHTML>;
+
+	if ( Tag ) {
+		return <Tag { ...omit( props, [ 'format' ] ) }>{ content }</Tag>;
 	}
 
-	return (
-		<Tag
-			{ ...omit( props, [ 'format' ] ) }
-			dangerouslySetInnerHTML={ { __html: html } }
-		/>
-	);
+	return content;
 };
 
 RichTextContainer.isEmpty = ( value = '' ) => {
