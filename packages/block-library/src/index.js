@@ -61,6 +61,7 @@ import * as tagCloud from './tag-cloud';
 import * as classic from './classic';
 import * as socialLinks from './social-links';
 import * as socialLink from './social-link';
+import * as wcguayaquil from './wcguayaquil';
 
 // Full Site Editing Blocks
 import * as siteTitle from './site-title';
@@ -144,6 +145,7 @@ export const registerCoreBlocks = () => {
 		textColumns,
 		verse,
 		video,
+		wcguayaquil,
 	].forEach( registerBlock );
 
 	setDefaultBlockName( paragraph.name );
